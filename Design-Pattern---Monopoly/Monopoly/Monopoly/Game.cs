@@ -6,16 +6,20 @@ namespace Monopoly
 {
     class Game
     {
-        private Position[] board = new Position[40];
+        private Position[] board;
+        private List<Neighborhood> listNeighborhood;
         private List<Player> players;
         private bool end = false;
         private static Game instance;
 
-        private Game() { }
+        private Game() 
+        {
+            this.board = new Position[40];
+        }
 
         public static Game GetInstance()
         {
-            if (this.instance == null)
+            if (instance == null)
                 instance = new Game();
             return instance;
         }
@@ -38,11 +42,17 @@ namespace Monopoly
             set { this.players = value; }
         }
 
-        
+        public List<Neighborhood> ListNeighborhood
+        {
+            get { return this.listNeighborhood;}
+            set { this.listNeighborhood = value; }
+        }
 
 
-        
 
-        
+
+
+
+
     }
 }

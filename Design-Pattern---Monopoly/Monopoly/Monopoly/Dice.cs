@@ -21,6 +21,7 @@ namespace Monopoly
         {
             Random rand = new Random();
             this.currentFace = faces[rand.Next(0, 6)];
+            
         }
     }
 }

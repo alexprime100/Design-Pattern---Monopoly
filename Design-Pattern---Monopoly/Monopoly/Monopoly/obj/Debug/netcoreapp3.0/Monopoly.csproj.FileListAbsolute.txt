@@ -9,3 +9,14 @@ D:\Documents\mes documents\travail scolaire\Design Pattern & Software Developmen
 D:\Documents\mes documents\travail scolaire\Design Pattern & Software Development Process\td6\Monopoly\Monopoly\obj\Debug\netcoreapp3.0\Monopoly.AssemblyInfo.cs
 D:\Documents\mes documents\travail scolaire\Design Pattern & Software Development Process\td6\Monopoly\Monopoly\obj\Debug\netcoreapp3.0\Monopoly.dll
 D:\Documents\mes documents\travail scolaire\Design Pattern & Software Development Process\td6\Monopoly\Monopoly\obj\Debug\netcoreapp3.0\Monopoly.pdb
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\obj\Debug\netcoreapp3.0\Monopoly.csprojAssemblyReference.cache
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\obj\Debug\netcoreapp3.0\Monopoly.AssemblyInfoInputs.cache
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\obj\Debug\netcoreapp3.0\Monopoly.AssemblyInfo.cs
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\obj\Debug\netcoreapp3.0\Monopoly.dll
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\obj\Debug\netcoreapp3.0\Monopoly.pdb
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\bin\Debug\netcoreapp3.0\Monopoly.exe
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\bin\Debug\netcoreapp3.0\Monopoly.deps.json
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\bin\Debug\netcoreapp3.0\Monopoly.runtimeconfig.json
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\bin\Debug\netcoreapp3.0\Monopoly.runtimeconfig.dev.json
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\bin\Debug\netcoreapp3.0\Monopoly.dll
+C:\Users\Alexandre\Source\Repos\Design-Pattern---Monopoly\Design-Pattern---Monopoly\Monopoly\Monopoly\bin\Debug\netcoreapp3.0\Monopoly.pdb

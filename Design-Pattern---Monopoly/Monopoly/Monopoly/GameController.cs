@@ -15,14 +15,13 @@ namespace Monopoly
             this.model = model;
             this.view = view;
             this.index = 0;
-            this.initialization();
         }
 
         public void initialization()
         {
             for (int i = 0; i < 40; i++)
             {
-                this.model.Board[i].Index = i;
+                this.model.Board[i] = new Position(i);
                 this.model.Board[i].Text = "You're on ";
                 this.model.Board[i].Price = 0;
                 this.model.Board[i].Buy = true;
@@ -35,6 +34,7 @@ namespace Monopoly
             PricesInitialization();
             RentsInitialization();
             OtherInitializations();
+            NeighborhoodInitialization();
         }
 
         public void NamesInitialization()
@@ -154,7 +154,7 @@ namespace Monopoly
 
         public void RentsInitialization()
         {
-            this.model.Board[0].Rent = -200;
+            this.model.Board[0].Rent = -200;   //the 200euros from the starting point are considered as a negative rent to pay
 
             this.model.Board[5].Rent = 25;
             this.model.Board[15].Rent = 25;
@@ -195,6 +195,59 @@ namespace Monopoly
 
         }
 
+        public void NeighborhoodInitialization()
+        {
+            this.model.ListNeighborhood = new List<Neighborhood>();
+
+            Neighborhood Pink = new Neighborhood("Pink", 0, 50);
+            Pink.Avenues.Add(this.model.Board[1].Index);
+            Pink.Avenues.Add(this.model.Board[3].Index);
+            this.model.ListNeighborhood.Add(Pink);
+
+            Neighborhood LightBlue = new Neighborhood("LightBlue", 1, 50);
+            LightBlue.Avenues.Add(this.model.Board[6].Index);
+            LightBlue.Avenues.Add(this.model.Board[8].Index);
+            LightBlue.Avenues.Add(this.model.Board[9].Index);
+            this.model.ListNeighborhood.Add(LightBlue);
+
+            Neighborhood Purple = new Neighborhood("Purple", 2, 100);
+            LightBlue.Avenues.Add(this.model.Board[11].Index);
+            LightBlue.Avenues.Add(this.model.Board[13].Index);
+            LightBlue.Avenues.Add(this.model.Board[14].Index);
+            this.model.ListNeighborhood.Add(Purple);
+
+            Neighborhood Orange = new Neighborhood("Orange", 3, 100);
+            LightBlue.Avenues.Add(this.model.Board[16].Index);
+            LightBlue.Avenues.Add(this.model.Board[18].Index);
+            LightBlue.Avenues.Add(this.model.Board[19].Index);
+            this.model.ListNeighborhood.Add(Orange);
+
+            Neighborhood Red = new Neighborhood("Red", 4, 150);
+            LightBlue.Avenues.Add(this.model.Board[21].Index);
+            LightBlue.Avenues.Add(this.model.Board[23].Index);
+            LightBlue.Avenues.Add(this.model.Board[24].Index);
+            this.model.ListNeighborhood.Add(Red);
+
+            Neighborhood Yellow = new Neighborhood("Yellow", 5, 150);
+            LightBlue.Avenues.Add(this.model.Board[26].Index);
+            LightBlue.Avenues.Add(this.model.Board[27].Index);
+            LightBlue.Avenues.Add(this.model.Board[29].Index);
+            this.model.ListNeighborhood.Add(Yellow);
+
+            Neighborhood Green = new Neighborhood("Green", 6, 200);
+            LightBlue.Avenues.Add(this.model.Board[31].Index);
+            LightBlue.Avenues.Add(this.model.Board[32].Index);
+            LightBlue.Avenues.Add(this.model.Board[34].Index);
+            this.model.ListNeighborhood.Add(Green);
+
+            Neighborhood DarkBlue = new Neighborhood("DarkBlue", 7, 200);
+            LightBlue.Avenues.Add(this.model.Board[37].Index);
+            LightBlue.Avenues.Add(this.model.Board[39].Index);
+            this.model.ListNeighborhood.Add(DarkBlue);
+
+
+        }
+
         public void OtherInitializations()
         {
             this.model.Board[10].VisitJail = true;
@@ -205,7 +258,6 @@ namespace Monopoly
             this.model.Board[4].Buy = false;
             this.model.Board[7].Buy = false;
             this.model.Board[10].Buy = false;
-            this.model.Board[12].Buy = false;
             this.model.Board[17].Buy = false;
             this.model.Board[20].Buy = false;
             this.model.Board[22].Buy = false;
@@ -219,6 +271,7 @@ namespace Monopoly
 
         public void Start()
         {
+            this.initialization();
             //create dices
             Dice d1 = new Dice();
             Dice d2 = new Dice();
@@ -228,7 +281,7 @@ namespace Monopoly
             while (!this.model.End)  //while the game continues
             {
                 this.model.Players[index].Play = true;    //Player index plays
-                while (this.model.Players[index].Play)     //roll dices and consecutive turns management
+                while (this.model.Players[index].Play)
                 {
                     PlayATurn(d1, d2);
                 }
@@ -252,32 +305,12 @@ namespace Monopoly
             Console.WriteLine("The winner is...\n.\n.\n.");
             Console.ReadKey();
             int winner = Winner();
-            Console.WriteLine(this.model.Players[winner] + "!!!");
+            Console.WriteLine(this.model.Players[winner].Name + "!!!");
         }
 
         public void PlayATurn(Dice d1, Dice d2)
         {
-            Console.WriteLine("do you want to see your money and your properties ? press 1 to see");
-            string answer = Console.ReadLine();
-            if (answer == "1")
-            {
-                Console.WriteLine("you have " + this.model.Players[index].Balance);
-                Console.WriteLine("here is your list of properties");
-                if (this.model.Players[index].Properties.count == 0)
-                    Console.WriteLine("you don't have properties");
-                else
-                {
-                    foreach(Position p in this.model.Players[index].Properties)
-                    {
-                        Console.Write(p.Name);
-                        if (p.HousesNumber > 0)
-                            Console.Write("with " + p.HousesNumber + " houses");
-                        Console.WriteLine();
-                    }
-                }
-            }
-
-            this.model.Players[index].Roll(d1, d2);
+            Roll(d1, d2);
             Console.WriteLine(this.model.Players[index].Position.Text + this.model.Players[index].Position.Name);
             if (this.model.Players[index].Position.Buy)   //if it is possible to buy this place
             {
@@ -298,9 +331,9 @@ namespace Monopoly
                 if (this.model.Players[index].Position.Rent != 0)   //if the player has to pay a tax or to earn money
                 {
                     this.model.Players[index].Balance -= this.model.Players[index].Position.Rent;    //the player's money is updated
-                    if (this.model.Players[index].Position.Rent > 0)     //if the player earned money
+                    if (this.model.Players[index].Position.Rent < 0)     //if the player earned money
                     {
-                        Console.WriteLine("Congratulations, you earned " + this.model.Players[index].Position.Rent + " Euros !");
+                        Console.WriteLine("Congratulations, you earned " + (- this.model.Players[index].Position.Rent) + " Euros !");
                         if (this.model.Players[index].Position.Index == 20)
                         {
                             this.model.Players[index].Position.Rent = 0;
@@ -316,6 +349,151 @@ namespace Monopoly
             }
         }
 
+        public void Roll(Dice d1, Dice d2)
+        {
+            Console.WriteLine(this.model.Players[index].Name + " plays");
+            Console.WriteLine("do you want to check your money and your properties or to build houses somewhere? press 1 to see");
+            string answer = Console.ReadLine();
+            if (answer == "1")
+            {
+                Console.WriteLine("you have " + this.model.Players[index].Balance + " euros");
+                Console.WriteLine("here is your list of properties");
+                if (this.model.Players[index].Properties.Count == 0)
+                    Console.WriteLine("you don't have properties");
+                else
+                {
+                    foreach (Position p in this.model.Players[index].Properties)
+                    {
+                        Console.Write(p.Name);
+                        if (p.HousesNumber > 0)
+                            Console.Write("with " + p.HousesNumber + " houses");
+                        Console.WriteLine();
+                    }
+                }
+
+                if (this.model.Players[index].Neighborhoods.Count > 0)
+                {
+                    Console.WriteLine("Do you want to build houses somewhere ? Press 1 to build houses");
+                    string answer2 = Console.ReadLine();
+                    if (answer2 == "1")
+                        BuildHouses();
+                }
+            }
+            Console.WriteLine("Press any key to roll the dices");
+            Console.ReadKey();
+            if (this.model.Players[index].Jail)
+            {
+                jailRoll(d1, d2);
+            }
+            else
+            {
+                d1.roll();
+                Console.WriteLine("Dice 1 : " + d1.CurrentFace);
+                d2.roll();
+                Console.WriteLine("Dice 2 : " + d2.CurrentFace);
+                Console.WriteLine("total roll : " + Convert.ToString(d1.CurrentFace + d2.CurrentFace));
+                int PositionIndex = this.model.Players[index].Position.Index;
+                PositionIndex += d1.CurrentFace + d2.CurrentFace;
+                if (PositionIndex > 40)
+                {
+                    this.model.Players[index].Balance += 200;
+                    Console.WriteLine("you earned 200Euros!");
+                }
+                    
+                PositionIndex %= 40;
+                this.model.Players[index].Position = this.model.Board[PositionIndex];
+                
+                if (d1.CurrentFace != d2.CurrentFace)
+                {
+                    this.model.Players[index].Play = false;
+                }
+                else
+                {
+                    this.model.Players[index].ConsecutivesTurns++;
+                }
+                if (this.model.Players[index].Position.Index == 30 || this.model.Players[index].ConsecutivesTurns == 3)
+                {
+                    this.model.Players[index].ConsecutivesTurns = 1;
+                    this.model.Players[index].Position = this.model.Board[10];
+                    this.model.Players[index].Play = false;
+                    this.model.Players[index].Jail = true;
+                }
+            }
+        }
+
+        public void BuildHouses()
+        {
+            bool Continue = true;
+            while (Continue)
+            {
+                Console.WriteLine("you can build houses in the following neighborhoods");
+                foreach (Neighborhood n in this.model.Players[index].Neighborhoods)
+                    Console.WriteLine(n.Name + " neighborhood (id = " + n.ID + ")");
+                int Nid = -1;
+                while (!ExistNeighborhood(Nid))
+                {
+                    Console.WriteLine("enter the id of the neighborhood where you want to build houses");
+                    Nid = Convert.ToInt32(Console.ReadLine());
+                }
+                if (this.model.ListNeighborhood[Nid].CurrentIndex < 0)
+                {
+                    Console.WriteLine("where do you want to build the first house ?");
+                    foreach (int i in this.model.Players[index].Neighborhoods[Nid].Avenues)
+                        Console.WriteLine(this.model.Board[i].Name + "(id = " + i + ")");
+
+                    int Sid = -1;
+                    while (ExistStreet(Sid, Nid))
+                    {
+                        Console.WriteLine("enter the  street id");
+                        Sid = Convert.ToInt32(Console.ReadLine());
+                    }
+                    this.model.ListNeighborhood[Nid].CurrentIndex = this.model.Players[index].Neighborhoods[Nid].Avenues.IndexOf(Sid);
+                }
+                int Nhouses = -1;
+                while (Nhouses < 0)
+                {
+                    Console.WriteLine("how many houses do you want to build ?");
+                    Nhouses = Convert.ToInt32(Console.ReadLine());
+                }
+                for (int i = 0; i < Nhouses; i++)
+                {
+                    if (this.model.Players[index].Balance >= this.model.ListNeighborhood[Nid].HousePrice)
+                    {
+                        this.model.Board[this.model.ListNeighborhood[Nid].Avenues[this.model.ListNeighborhood[Nid].CurrentIndex]].HousesNumber++;
+                        this.model.Board[this.model.ListNeighborhood[Nid].Avenues[this.model.ListNeighborhood[Nid].CurrentIndex]].Rent *= 2;
+                        this.model.Players[index].Balance -= this.model.ListNeighborhood[Nid].HousePrice;
+                    }
+                    else
+                    {
+                        Console.WriteLine("You don't have enough money to build more houses");
+                        i = Nhouses;
+                    }
+                    
+                }
+                Console.WriteLine("Do you want to build houses in another neighborhood ? (Press 1)");
+                string answer = Console.ReadLine();
+                if (answer != "1")
+                    Continue = false;
+            }
+            
+        }
+
+        public void jailRoll(Dice d1, Dice d2)
+        {
+            this.model.Players[index].JailTurn++;
+            d1.roll();
+            d2.roll();
+            if (this.model.Players[index].JailTurn > 3 || d1.CurrentFace == d2.CurrentFace)
+            {
+                this.model.Players[index].JailTurn = 0;
+                int PositionIndex = this.model.Players[index].Position.Index;
+                PositionIndex += d1.CurrentFace + d2.CurrentFace;
+                PositionIndex %= 40;
+                this.model.Players[index].Position = this.model.Board[PositionIndex];
+            }
+            this.model.Players[index].Jail = false;
+        }
+
         public void BuyAPlace()
         {
             Console.WriteLine("Do you want to buy this place ? It costs " + this.model.Players[index].Position.Price + "Euros");
@@ -325,7 +503,7 @@ namespace Monopoly
             {
                 if (this.model.Players[index].Balance < this.model.Players[index].Position.Price)   //if the player doesn't have enough money
                 {
-                    Console.writeLine("you don't have enough money to buy this place");
+                    Console.WriteLine("you don't have enough money to buy this place");
                 }
                 else
                 {
@@ -334,7 +512,7 @@ namespace Monopoly
                     this.model.Players[index].Properties.Add(this.model.Players[index].Position);          //the place is added to the player's properties
                     this.model.Players[index].Properties.Sort();                                     //the list is sorted by index
                     Console.WriteLine("Congratulations, now you owe " + this.model.Players[index].Position.Name);
-
+                    CheckForNeighborhood(this.model.Players[index].Position.Index);
                     if (this.model.Players[index].Position.Index % 10 + 5 == 0)      //if the property is a train station
                     {
                         UpdateStationRent();
@@ -344,6 +522,50 @@ namespace Monopoly
                 
                 
             }
+        }
+
+        public void CheckForNeighborhood(int avenueIndex)
+        {
+            //check if the player ownes every other streets of the neighborhood
+            bool CompleteNeighborhood = true;
+            int NeighborhoodID = SearchNeighborhoodID(avenueIndex);
+            foreach(int i in this.model.ListNeighborhood[NeighborhoodID].Avenues)
+            {
+                if (!this.model.Players[index].Properties.Contains(this.model.Board[i]))
+                    CompleteNeighborhood = false;
+            }
+            if (CompleteNeighborhood)
+            {
+                Console.WriteLine("Congratulations, now you owe the whole " + this.model.ListNeighborhood[NeighborhoodID].Name + " neighborhood!");
+                Console.WriteLine("every rents are doubled, and you can add houses!");
+                foreach (int i in this.model.ListNeighborhood[NeighborhoodID].Avenues)
+                {
+                    this.model.Board[i].Rent *= 2;
+                }
+                this.model.Players[index].Neighborhoods.Add(this.model.ListNeighborhood[NeighborhoodID]);
+                Console.WriteLine("Do you want to build houses now ? (press 1)");
+                string answer = Console.ReadLine();
+                if (answer == "1")
+                    BuildHouses();
+            }
+        }
+
+        public int SearchNeighborhoodID(int avenueIndex)
+        {
+            int NeighborhoodID = -1;
+            for (int i = 0; i < this.model.ListNeighborhood.Count; i++)
+            {
+                for (int j = 0; j < this.model.ListNeighborhood[i].Avenues.Count; j++)
+                {
+                    if (avenueIndex == this.model.ListNeighborhood[i].Avenues[j])
+                    {
+                        NeighborhoodID = i;
+                        i = this.model.ListNeighborhood.Count;
+                        j = this.model.ListNeighborhood[i].Avenues.Count;
+                    }
+                }
+            }
+            return NeighborhoodID;
         }
 
         public void PayRent()
@@ -462,6 +684,32 @@ namespace Monopoly
             return exist;
         }
 
+        public bool ExistNeighborhood(int id)
+        {
+            bool exist = false;
+            for (int i = 0; i < this.model.Players[index].Neighborhoods.Count; i++)
+            {
+                if (id == this.model.Players[index].Neighborhoods[i].ID)
+                {
+                    exist = true;
+                }
+            }
+            return exist;
+        }
+
+        public bool ExistStreet(int StreetId, int Nid)
+        {
+            bool exist = false;
+            for (int i = 0; i < this.model.Players[index].Neighborhoods[Nid].Avenues.Count; i++)
+            {
+                if (StreetId == this.model.Players[index].Neighborhoods[Nid].Avenues[i])
+                {
+                    exist = true;
+                }
+            }
+            return exist;
+        }
+
         public int SearchPlayerID(string name)
         {
             int id = -1;
@@ -480,5 +728,6 @@ namespace Monopoly
         {
             this.view.DisplayGame();
         }
+
     }
 }

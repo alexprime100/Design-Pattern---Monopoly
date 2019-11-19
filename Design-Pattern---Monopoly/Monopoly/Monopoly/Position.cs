@@ -17,10 +17,9 @@ namespace Monopoly
         private bool buy;
         private int housesNumber;   //hotel is considered sa a 5th house
 
-        public Position(int index, string name)
+        public Position(int index)
         {
             this.index = index;
-            this.name = name;
             this.goToJail = false;
             this.visitJail = false;
             this.housesNumber = 0;

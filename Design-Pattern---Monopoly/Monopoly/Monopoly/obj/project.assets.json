@@ -15,11 +15,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Documents\\mes documents\\travail scolaire\\Design Pattern & Software Development Process\\td6\\Monopoly\\Monopoly\\Monopoly.csproj",
+      "projectUniqueName": "C:\\Users\\Alexandre\\Source\\Repos\\Design-Pattern---Monopoly\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\Monopoly.csproj",
       "projectName": "Monopoly",
-      "projectPath": "D:\\Documents\\mes documents\\travail scolaire\\Design Pattern & Software Development Process\\td6\\Monopoly\\Monopoly\\Monopoly.csproj",
+      "projectPath": "C:\\Users\\Alexandre\\Source\\Repos\\Design-Pattern---Monopoly\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\Monopoly.csproj",
       "packagesPath": "C:\\Users\\Alexandre\\.nuget\\packages\\",
-      "outputPath": "D:\\Documents\\mes documents\\travail scolaire\\Design Pattern & Software Development Process\\td6\\Monopoly\\Monopoly\\obj\\",
+      "outputPath": "C:\\Users\\Alexandre\\Source\\Repos\\Design-Pattern---Monopoly\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
