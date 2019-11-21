@@ -248,6 +248,14 @@ namespace Monopoly
 
         }
 
+        public void PlayerInitializations()
+        {
+            for(int i =0; i < this.model.Players.Count; i++)
+            {
+                this.model.Board[0].ListPlayers.Add(this.model.Players[i]);
+            }
+        }
+
         public void OtherInitializations()
         {
             this.model.Board[10].VisitJail = true;
@@ -267,6 +275,21 @@ namespace Monopoly
             this.model.Board[38].Buy = false;
 
 
+        }
+
+        public void InitializationBoard()
+        {
+            this.model.BoardGame.TheBoard[0, 0].Street = this.model.Board[20];
+            this.model.BoardGame.TheBoard[0, 10].Street = this.model.Board[30];
+            this.model.BoardGame.TheBoard[10, 0].Street = this.model.Board[10];
+            this.model.BoardGame.TheBoard[10, 10].Street = this.model.Board[0];
+            for (int j = 1; j < 10; j++)
+            {
+                this.model.BoardGame.TheBoard[0, j].Street = this.model.Board[20 + j];
+                this.model.BoardGame.TheBoard[10, j].Street = this.model.Board[10 - j];
+                this.model.BoardGame.TheBoard[j, 10].Street = this.model.Board[30 + j];
+                this.model.BoardGame.TheBoard[j, 0].Street = this.model.Board[20 - j];
+            }
         }
 
         public void Start()
@@ -393,6 +416,7 @@ namespace Monopoly
                 Console.WriteLine("Dice 2 : " + d2.CurrentFace);
                 Console.WriteLine("total roll : " + Convert.ToString(d1.CurrentFace + d2.CurrentFace));
                 int PositionIndex = this.model.Players[index].Position.Index;
+                this.model.Board[PositionIndex].ListPlayers.Remove(this.model.Players[index]);
                 PositionIndex += d1.CurrentFace + d2.CurrentFace;
                 if (PositionIndex > 40)
                 {
@@ -402,7 +426,9 @@ namespace Monopoly
                     
                 PositionIndex %= 40;
                 this.model.Players[index].Position = this.model.Board[PositionIndex];
-                
+                this.model.Board[PositionIndex].ListPlayers.Add(this.model.Players[index]);
+
+
                 if (d1.CurrentFace != d2.CurrentFace)
                 {
                     this.model.Players[index].Play = false;
@@ -415,6 +441,7 @@ namespace Monopoly
                 {
                     this.model.Players[index].ConsecutivesTurns = 1;
                     this.model.Players[index].Position = this.model.Board[10];
+                    this.model.Board[10].ListPlayers.Add(this.model.Players[index]);
                     this.model.Players[index].Play = false;
                     this.model.Players[index].Jail = true;
                 }
@@ -485,11 +512,12 @@ namespace Monopoly
             d2.roll();
             if (this.model.Players[index].JailTurn > 3 || d1.CurrentFace == d2.CurrentFace)
             {
+                this.model.Board[10].ListPlayers.Remove(this.model.Players[index]);
                 this.model.Players[index].JailTurn = 0;
-                int PositionIndex = this.model.Players[index].Position.Index;
+                int PositionIndex = 10;
                 PositionIndex += d1.CurrentFace + d2.CurrentFace;
-                PositionIndex %= 40;
                 this.model.Players[index].Position = this.model.Board[PositionIndex];
+                this.model.Board[PositionIndex].ListPlayers.Add(this.model.Players[index]);
             }
             this.model.Players[index].Jail = false;
         }
@@ -621,6 +649,11 @@ namespace Monopoly
                     Console.WriteLine("this name is already taken, choose another one");
                     symbol = Convert.ToChar(Console.ReadLine());
                 }
+                while (symbol == '#')
+                {
+                    Console.WriteLine("Sorry, but this symbol is used for houses, please choose another one");
+                    symbol = Convert.ToChar(Console.ReadLine());
+                }
                 this.model.Players.Add(new Player(name, this.model.Board[0], symbol));
             }
         }
@@ -726,7 +759,7 @@ namespace Monopoly
 
         public void DisplayGame()
         {
-            this.view.DisplayGame();
+            //this.view.DisplayGame();
         }
 
     }

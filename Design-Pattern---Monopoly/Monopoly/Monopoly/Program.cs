@@ -8,12 +8,15 @@ namespace Monopoly
         static void Main(string[] args)
         {
             //Monopoly();
-            List<string> list = new List<string>();
+            /*List<string> list = new List<string>();
             list.Add("z");
             list.Add("r");
             list.Add("g");
             Console.WriteLine(list.Contains("e"));
-            Console.WriteLine(list.Contains("g"));
+            Console.WriteLine(list.Contains("g"));*/
+            string f = "sdfghdrh";
+            char e = f[0];
+            Console.WriteLine(e);
         }
 
         static void Monopoly()

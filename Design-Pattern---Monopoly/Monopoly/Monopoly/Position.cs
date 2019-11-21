@@ -16,6 +16,7 @@ namespace Monopoly
         private int rent;
         private bool buy;
         private int housesNumber;   //hotel is considered sa a 5th house
+        private List<Player> listPlayers;
 
         public Position(int index)
         {
@@ -83,6 +84,12 @@ namespace Monopoly
         {
             get { return this.housesNumber; }
             set { this.housesNumber = value; }
+        }
+
+        public List<Player> ListPlayers
+        {
+            get { return this.listPlayers; }
+            set { this.listPlayers = value; }
         }
 
         public int CompareTo(Position p)
