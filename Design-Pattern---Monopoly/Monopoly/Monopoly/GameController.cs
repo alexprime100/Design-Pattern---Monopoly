@@ -333,6 +333,7 @@ namespace Monopoly
                 if (this.model.Players[index].Balance == 0)    //if this player is ruined, he is removed
                 {
                     this.model.Players.RemoveAt(index);
+                    this.model.Observers.RemoveAt(index);
                     if (index == this.model.Players.Count)
                         index = 0;
                 }
