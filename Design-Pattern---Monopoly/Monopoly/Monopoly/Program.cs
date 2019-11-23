@@ -14,9 +14,11 @@ namespace Monopoly
             list.Add("g");
             Console.WriteLine(list.Contains("e"));
             Console.WriteLine(list.Contains("g"));*/
-            string f = "sdfghdrh";
-            char e = f[0];
-            Console.WriteLine(e);
+            List<int> list = new List<int>();
+            list.Add(3);
+            list.Add(2);
+            list.Add(3);
+            
         }
 
         static void Monopoly()

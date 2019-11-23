@@ -12,7 +12,7 @@ namespace Monopoly
         private List<Player> players;
         private bool end = false;
         private static Game instance;
-        private List<Observer> observers;
+        private List<IObserver> observers;
 
         private Game() 
         {
@@ -27,7 +27,7 @@ namespace Monopoly
             return instance;
         }
 
-        public void AddObserver(Observer o)
+        public void AddObserver(IObserver o)
         {
             this.observers.Add(o);
         }
@@ -62,7 +62,7 @@ namespace Monopoly
             set { this.listNeighborhood = value; }
         }
 
-        public List<Observer> Observers
+        public List<IObserver> Observers
         {
             get { return this.observers; }
             set { this.observers = value; }

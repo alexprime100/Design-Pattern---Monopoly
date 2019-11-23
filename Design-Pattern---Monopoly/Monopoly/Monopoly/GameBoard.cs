@@ -26,19 +26,7 @@ namespace Monopoly
             set { this.lenght = value; }
         }
 
-        public void setLenght(Game game)
-        {
-            int max = 0;
-
-            foreach(Position p in game.Board)
-            {
-                if (p.Name.Length > max)
-                {
-                    max = p.Name.Length;
-                }
-            }
-            this.lenght = (max / 2) + 1;
-        }
+        
 
         
     }

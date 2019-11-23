@@ -6,12 +6,12 @@ namespace Monopoly
 {
     class Cell
     {
-        private Position street;
+        private int street;
         private int lenght;
         private char[,] matrix;
         private int rentLine;
 
-        public Cell(Position street, int lenght)
+        public Cell(int street, int lenght)
         {
             this.street = street;
             this.lenght = lenght;
@@ -23,7 +23,7 @@ namespace Monopoly
             this.matrix = new char[lenght, lenght];
         }
 
-        public Position Street
+        public int Street
         {
             get { return this.street; }
             set { this.street = value; }
@@ -49,9 +49,6 @@ namespace Monopoly
 
         public void FillCell()
         {
-            int i = 0;
-            int j = 0;
-
             matrix[0, 0] = '|';
             for(int k = 1; k < lenght-1; k++)
             {
@@ -61,44 +58,44 @@ namespace Monopoly
                 matrix[k, lenght - 1] = '|';
             }
             matrix[lenght - 1, lenght - 1] = '|';
-
-            for (int k = 0; k < this.street.Name.Length; k++)
+            for (int i = 1; i < this.lenght-1; i++)
             {
-                this.matrix[i, j] = this.street.Name[k];
-                j++;
-                if (i == this.lenght)
+                for (int j = 1; j < this.lenght-1; j++)
                 {
-                    j = 0;
-                    i++;
+                    matrix[i, j] = ' ';
                 }
-                
             }
-
-            i = this.lenght - 2;
-            j = (lenght / 2) - 2;
-            string rent = Convert.ToString(this.street.Rent);
-            for (int k = 0; k < rent.Length; k++)
+            
+        }
+        public void AddPlayer(Player p)
+        {
+            int index = 0;
+            while (this.matrix[this.lenght/2, index] != ' ')
             {
-                matrix[i, j] = rent[k];
+                index++;
+            }
+            this.matrix[this.lenght / 2, index] = p.Symbol;
+        }
+
+        public void RemovePlayer(Player p)
+        {
+            int index = 0;
+            while (this.matrix[this.lenght / 2, index] != p.Symbol)
+            {
+                index++;
+            }
+            this.matrix[this.lenght / 2, index] = ' ';
+        }
+
+        public void AddHouse()
+        {
+            int i = 2;
+            int j = 2;
+            while (this.matrix[i,j]== '#')
+            {
                 j++;
             }
-
-            i -= 2;
-            j = (lenght / 2) - 2;
-            string price = Convert.ToString(this.street.Price);
-            for (int k = 0; k < price.Length; k++)
-            {
-                matrix[i, j] = price[k];
-                j++;
-            }
-
-            /*i = this.lenght/2;
-            j = 1;
-            for (int k = 0; k < this.street.ListPlayers.Count; k++)
-            {
-                matrix[i, j] = this.street.ListPlayers[k].Symbol;
-                j++;
-            }*/
+            this.matrix[i, j] = '#';
         }
 
         public void FillNullCell()

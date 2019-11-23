@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Alexandre\\source\\repos\\monopoly\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\Monopoly.csproj": {}
+    "C:\\Users\\Alexandre\\source\\repos\\Design-Pattern---Monopoly\\.vs\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\Monopoly.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Alexandre\\source\\repos\\monopoly\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\Monopoly.csproj": {
+    "C:\\Users\\Alexandre\\source\\repos\\Design-Pattern---Monopoly\\.vs\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\Monopoly.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Alexandre\\source\\repos\\monopoly\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\Monopoly.csproj",
+        "projectUniqueName": "C:\\Users\\Alexandre\\source\\repos\\Design-Pattern---Monopoly\\.vs\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\Monopoly.csproj",
         "projectName": "Monopoly",
-        "projectPath": "C:\\Users\\Alexandre\\source\\repos\\monopoly\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\Monopoly.csproj",
+        "projectPath": "C:\\Users\\Alexandre\\source\\repos\\Design-Pattern---Monopoly\\.vs\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\Monopoly.csproj",
         "packagesPath": "C:\\Users\\Alexandre\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Alexandre\\source\\repos\\monopoly\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\obj\\",
+        "outputPath": "C:\\Users\\Alexandre\\source\\repos\\Design-Pattern---Monopoly\\.vs\\Design-Pattern---Monopoly\\Monopoly\\Monopoly\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
