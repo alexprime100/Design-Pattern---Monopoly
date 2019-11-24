@@ -65,8 +65,5 @@ namespace Monopoly
                 Console.WriteLine();
             }
         }
-
-        public void Add(Player p)
-        { }
     }
 }

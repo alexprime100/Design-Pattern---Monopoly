@@ -14,10 +14,7 @@ namespace Monopoly
             list.Add("g");
             Console.WriteLine(list.Contains("e"));
             Console.WriteLine(list.Contains("g"));*/
-            List<int> list = new List<int>();
-            list.Add(3);
-            list.Add(2);
-            list.Add(3);
+            
             
         }
 
@@ -25,8 +22,7 @@ namespace Monopoly
         {
 
             Game game = Game.GetInstance();
-            GameView gameView = new GameView();
-            GameController controller = new GameController(game, gameView);
+            GameController controller = new GameController(game);
             controller.Start();
         }
     }

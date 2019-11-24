@@ -13,6 +13,7 @@ namespace Monopoly
         private bool end = false;
         private static Game instance;
         private List<IObserver> observers;
+        private List<Icard> cards;
 
         private Game() 
         {
@@ -66,6 +67,12 @@ namespace Monopoly
         {
             get { return this.observers; }
             set { this.observers = value; }
+        }
+
+        public List<Icard> Cards
+        {
+            get { return this.Cards; }
+            set { this.Cards = value; }
         }
 
 

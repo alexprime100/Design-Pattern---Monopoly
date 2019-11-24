@@ -16,29 +16,31 @@ namespace Monopoly
 
         
 
-        public void update(List<int[]> indexes, Player player = null, GameBoard b = null)
+        public void update(List<int[]> indexes, Player p, GameBoard b = null)
         {
-            this.player = player;
-            //on veut actualiser une description lorsque le nombre de maisons change
-            //logiquement, grâce à list.sort(), player.properties et properties sont identiquement ordonnés, les index sont donc les mêmes
-            //indexes doit contenir les index des rues à actualiser de player.properties
-            foreach(var x in indexes)
+            if(indexes.Count == 0 && !this.player.Properties.Contains(p.Position))    //add  a property
             {
-                this.properties[x[0]].Property = player.Properties[x[0]];
-                this.properties[x[0]].UpdateDescription();
+                this.player = p;
+                this.properties.Add(new DisplayProperties(p.Position));
+                this.properties[this.properties.Count - 1].UpdateDescription();
             }
+            else
+            {
+                this.player = p;
+                //on veut actualiser une description lorsque le nombre de maisons change
+                //logiquement, grâce à list.sort(), player.properties et properties sont identiquement ordonnés, les index sont donc les mêmes
+                //indexes doit contenir les index des rues à actualiser de player.properties
+                foreach (var x in indexes)
+                {
+                    this.properties[x[0]].Property = this.player.Properties[x[0]];
+                    this.properties[x[0]].UpdateDescription();
+                }
+            }
+            
             this.properties.Sort();
         }
 
-        public void Add(Player p)
-        {
-            this.player = p;
-            this.properties.Add(new DisplayProperties(p.Position));
-            this.properties[this.properties.Count - 1].UpdateDescription();
-            this.properties.Sort();
-        }
-
-        public void Display()
+       public void Display()
         {
             Console.WriteLine("You have " + this.player.Balance + "Euros\n");
             Console.Write("And you owe ");

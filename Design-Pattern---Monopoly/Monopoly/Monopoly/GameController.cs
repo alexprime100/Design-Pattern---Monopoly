@@ -7,13 +7,11 @@ namespace Monopoly
     class GameController
     {
         private Game model;
-        private GameView view;
         private int index;
 
-        public GameController(Game model, GameView view)
+        public GameController(Game model)
         {
             this.model = model;
-            this.view = view;
             this.index = 0;
         }
 
@@ -35,6 +33,10 @@ namespace Monopoly
             RentsInitialization();
             OtherInitializations();
             NeighborhoodInitialization();
+            InitializationBoard();
+            ObserversInitialization();
+
+            CardsInitialization();
         }
 
         public void NamesInitialization()
@@ -42,7 +44,7 @@ namespace Monopoly
             this.model.Board[0].Name = "Starting Point";
 
             this.model.Board[1].Name = "Belleville's Boulevard";
-            this.model.Board[2].Name = "Community Chest";
+            this.model.Board[2].Name = "Luck";
             this.model.Board[3].Name = "Lecourbe Street";
             this.model.Board[4].Name = "Income Tax";
 
@@ -63,7 +65,7 @@ namespace Monopoly
             this.model.Board[15].Name = " Lyon's Station";
 
             this.model.Board[16].Name = "Mozart Avenue";
-            this.model.Board[17].Name = "Community Chest";
+            this.model.Board[17].Name = "Luck";
             this.model.Board[18].Name = "Saint-Michel Boulevard";
             this.model.Board[19].Name = "Pigalle Square";
 
@@ -85,7 +87,7 @@ namespace Monopoly
 
             this.model.Board[31].Name = "Breteuil Avenue";
             this.model.Board[32].Name = "Foch Avenue";
-            this.model.Board[33].Name = "Community Chest";
+            this.model.Board[33].Name = "Luck";
             this.model.Board[34].Name = "Capucines Boulevard";
 
             this.model.Board[35].Name = "Saint-Lazare Station";
@@ -307,6 +309,43 @@ namespace Monopoly
             this.model.Observers.Add(board);
         }
 
+        public void CardsInitialization()
+        {
+            MyCardFactory cf = new MyCardFactory();
+            //Money Cards
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Bank is versing you ", 50));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "your building is paying back, you earn ", 150));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Congratulations, you won the crosswords competition, you earn ", 100));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Bank is reimbursing you ", 20));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "You inherit ", 100));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Your sale is paying back, you earn ",50 ));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "you earn your annual income : ", 100));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Congratulations, you won the beauty competition, you earn ",100));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "receive your interest at 7% ", 25));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Bank error in your favor, you earn ",200));
+
+            //pay cards
+            this.model.Cards.Add((PayCard)cf.CreateCard(CardType.PayCard, "Pay your insurance : ", 200));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Pay the hospital : ",100));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Pay the doctor : ", 50));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "fine for drunkenness", 20));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "pay the school fees ",150));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "fine for speeding ",15));
+            
+            //move cards
+            this.model.Cards.Add((MoveCard)cf.CreateCard(CardType.MoveCard, "", 0, this.model.Board[0]));
+            this.model.Cards.Add((MoveCard)cf.CreateCard(CardType.MoveCard, "", 0, this.model.Board[0]));
+            this.model.Cards.Add((MoveCard)cf.CreateCard(CardType.MoveCard, "", 0, this.model.Board[30]));
+            this.model.Cards.Add((MoveCard)cf.CreateCard(CardType.MoveCard, "", 0, this.model.Board[1]));
+            this.model.Cards.Add((MoveCard)cf.CreateCard(CardType.MoveCard, "", 0, this.model.Board[30]));
+            this.model.Cards.Add((MoveCard)cf.CreateCard(CardType.MoveCard, "", 0, this.model.Board[11]));
+            this.model.Cards.Add((MoveCard)cf.CreateCard(CardType.MoveCard, "", 0, this.model.Board[15]));
+            this.model.Cards.Add((MoveCard)cf.CreateCard(CardType.MoveCard, "", 0, this.model.Board[39]));
+            this.model.Cards.Add((MoveCard)cf.CreateCard(CardType.MoveCard, "", 0, this.model.Board[24]));
+
+
+        }
+
         public void Start()
         {
             this.initialization();
@@ -356,12 +395,17 @@ namespace Monopoly
         public void PlayATurn(Dice d1, Dice d2)
         {
             Roll(d1, d2);
+            PositionAction();
+        }
+
+        public void PositionAction()
+        {
             Console.WriteLine(this.model.Players[index].Position.Text + this.model.Players[index].Position.Name);
             if (this.model.Players[index].Position.Buy)   //if it is possible to buy this place
             {
                 if (this.model.Players[index].Position.Owner == null) //if no one ownes this place
                 {
-                    BuyAPlace();  
+                    BuyAPlace();
                 }
                 else     //if someone ownes this place
                 {
@@ -378,17 +422,38 @@ namespace Monopoly
                     this.model.Players[index].Balance -= this.model.Players[index].Position.Rent;    //the player's money is updated
                     if (this.model.Players[index].Position.Rent < 0)     //if the player earned money
                     {
-                        Console.WriteLine("Congratulations, you earned " + (- this.model.Players[index].Position.Rent) + " Euros !");
+                        Console.WriteLine("Congratulations, you earned " + (-this.model.Players[index].Position.Rent) + " Euros !");
                         if (this.model.Players[index].Position.Index == 20)
                         {
                             this.model.Players[index].Position.Rent = 0;
                         }
                     }
-                        
+
                     else     //if the player lost money
                     {
                         Console.WriteLine("You lost " + this.model.Players[index].Position.Rent + " Euros");
                         this.model.Board[20].Rent -= this.model.Players[index].Position.Rent;
+                    }
+                    this.model.Observers[index].update(null, this.model.Players[index]);
+                }
+                else
+                {
+                    if (this.model.Players[index].Position.Name == "Luck")
+                    {
+                        Random rand = new Random();
+                        int rnd = rand.Next(0, this.model.Cards.Count);
+                        int positionIndex = this.model.Players[index].Position.Index;
+                        this.model.Cards[rnd].Action(this.model.Players[index]);
+
+                        if (this.model.Cards[rnd].GetType() == CardType.MoveCard.GetType())   //if it was a MoveCard
+                        {
+                            MovePlayer(positionIndex, this.model.Players[index].Position.Index);
+                            PositionAction();          //the player is now on a new street, so the game has to execute this function again
+                        }
+                        else
+                        {
+                            this.model.Observers[index].update(null, this.model.Players[index]);
+                        }
                     }
                 }
             }
@@ -441,7 +506,7 @@ namespace Monopoly
                 PositionIndex %= 40;
                 this.model.Players[index].Position = this.model.Board[PositionIndex];
                 this.model.Board[PositionIndex].ListPlayers.Add(this.model.Players[index]);
-                
+
                 MovePlayer(InitialPositionIndex, PositionIndex);
 
                 if (d1.CurrentFace != d2.CurrentFace)
@@ -463,7 +528,7 @@ namespace Monopoly
                     this.model.Players[index].Jail = true;
                     MovePlayer(PositionIndex, 10);
                 }
-            }
+            }            
         }
 
         public void MovePlayer(int index1, int index2)
@@ -606,14 +671,9 @@ namespace Monopoly
                     {
                         UpdateStationRent();
                     }
-                    List<int[]> indexes = new List<int[]>();
-                    indexes.Add(new int[] { this.model.Players[index].Position.Index, this.model.Players[index].Properties.IndexOf(this.model.Players[index].Position) });
-                    this.model.Observers[index].Add(this.model.Players[index]);
+                    this.model.Observers[index].update(null, this.model.Players[index]);
 
                 }
-                
-                
-                
             }
         }
 
@@ -873,10 +933,7 @@ namespace Monopoly
             return indexes;
         }
 
-        public void DisplayGame()
-        {
-            //this.view.DisplayGame();
-        }
+        
 
     }
 }
