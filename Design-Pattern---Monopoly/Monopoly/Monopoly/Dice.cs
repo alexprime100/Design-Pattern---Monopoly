@@ -23,5 +23,12 @@ namespace Monopoly
             this.currentFace = faces[rand.Next(0, 6)];
             
         }
+
+        public void rollTest()
+        {
+            Console.WriteLine("enter a number : ");
+            int number = Convert.ToInt32(Console.ReadLine());
+            this.currentFace = number;
+        }
     }
 }

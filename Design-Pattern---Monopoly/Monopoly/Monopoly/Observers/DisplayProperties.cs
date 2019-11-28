@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Monopoly
 {
-    class DisplayProperties
+    class DisplayProperties : IComparable<DisplayProperties>
     {
         private Position property;
         private string decription;

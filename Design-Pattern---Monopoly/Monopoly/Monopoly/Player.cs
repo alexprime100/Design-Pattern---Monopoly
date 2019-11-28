@@ -24,10 +24,11 @@ namespace Monopoly
             this.jail = false;       //the player is in jail or not
             this.jailTurn = 0;       //number of consecutive turns in jail
             this.play = false;       //it is this player's turn or not
-            this.consecutivesTurns = 1;     //number of consecutive turns
+            this.consecutivesTurns = 0;     //number of consecutive turns
             this.balance = 1500;       //money of the player
             this.symbol = symbol;      //symbol used by the player
             this.properties = new List<Position>();      //list of properties
+            this.neighborhoods = new List<Neighborhood>();
         }
 
         public string Name

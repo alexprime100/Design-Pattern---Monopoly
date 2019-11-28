@@ -34,7 +34,7 @@ namespace Monopoly
             OtherInitializations();
             NeighborhoodInitialization();
             InitializationBoard();
-            ObserversInitialization();
+            //ObserversInitialization();
 
             CardsInitialization();
         }
@@ -142,7 +142,7 @@ namespace Monopoly
             this.model.Board[24].Price = 240;
 
             this.model.Board[26].Price = 260;
-            this.model.Board[28].Price = 260;
+            this.model.Board[27].Price = 260;
             this.model.Board[29].Price = 280;
 
             this.model.Board[31].Price = 300;
@@ -273,30 +273,22 @@ namespace Monopoly
 
         public void InitializationBoard()
         {
-            this.model.BoardGame.TheBoard[0, 0].Street = this.model.Board[20].Index;
-            this.model.BoardGame.TheBoard[0, 0].FillCell();
-            this.model.BoardGame.TheBoard[0, 10].Street = this.model.Board[30].Index;
-            this.model.BoardGame.TheBoard[0, 10].FillCell();
-            this.model.BoardGame.TheBoard[10, 0].Street = this.model.Board[10].Index;
-            this.model.BoardGame.TheBoard[10, 0].FillCell();
-            this.model.BoardGame.TheBoard[10, 10].Street = this.model.Board[0].Index;
-            this.model.BoardGame.TheBoard[10, 10].FillCell();
+            this.model.BoardGame.TheBoard[0, 0] = new Cell( this.model.Board[20].Index);
+            this.model.BoardGame.TheBoard[0, 10] = new Cell( this.model.Board[30].Index);
+            this.model.BoardGame.TheBoard[10, 0] = new Cell(this.model.Board[10].Index);
+            this.model.BoardGame.TheBoard[10, 10] = new Cell(this.model.Board[0].Index);
             for (int j = 1; j < 10; j++)
             {
-                this.model.BoardGame.TheBoard[0, j].Street = this.model.Board[20 + j].Index;
-                this.model.BoardGame.TheBoard[0, j].FillCell();
-                this.model.BoardGame.TheBoard[10, j].Street = this.model.Board[10 - j].Index;
-                this.model.BoardGame.TheBoard[10, j].FillCell();
-                this.model.BoardGame.TheBoard[j, 10].Street = this.model.Board[30 + j].Index;
-                this.model.BoardGame.TheBoard[j, 10].FillCell();
-                this.model.BoardGame.TheBoard[j, 0].Street = this.model.Board[20 - j].Index;
-                this.model.BoardGame.TheBoard[j, 0].FillCell();
+                this.model.BoardGame.TheBoard[0, j] = new Cell(this.model.Board[20 + j].Index);
+                this.model.BoardGame.TheBoard[10, j] = new Cell(this.model.Board[10 - j].Index);
+                this.model.BoardGame.TheBoard[j, 10] = new Cell(this.model.Board[30 + j].Index);
+                this.model.BoardGame.TheBoard[j, 0] = new Cell(this.model.Board[20 - j].Index);
             }
-            for (int i = 0; i < this.model.BoardGame.Lenght; i++)
+            for (int i = 1; i < 10; i++)
             {
-                for (int j = 0; j < this.model.BoardGame.Lenght; j++)
+                for (int j = 1; j < 10; j++)
                 {
-                    this.model.BoardGame.TheBoard[i, j].FillNullCell();
+                    this.model.BoardGame.TheBoard[i, j] = new Cell();
                 }
             }
 
@@ -326,11 +318,11 @@ namespace Monopoly
 
             //pay cards
             this.model.Cards.Add((PayCard)cf.CreateCard(CardType.PayCard, "Pay your insurance : ", 200));
-            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Pay the hospital : ",100));
-            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Pay the doctor : ", 50));
-            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "fine for drunkenness", 20));
-            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "pay the school fees ",150));
-            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "fine for speeding ",15));
+            this.model.Cards.Add((PayCard)cf.CreateCard(CardType.PayCard, "Pay the hospital : ",100));
+            this.model.Cards.Add((PayCard)cf.CreateCard(CardType.PayCard, "Pay the doctor : ", 50));
+            this.model.Cards.Add((PayCard)cf.CreateCard(CardType.PayCard, "fine for drunkenness", 20));
+            this.model.Cards.Add((PayCard)cf.CreateCard(CardType.PayCard, "pay the school fees ",150));
+            this.model.Cards.Add((PayCard)cf.CreateCard(CardType.PayCard, "fine for speeding ",15));
             
             //move cards
             this.model.Cards.Add((MoveCard)cf.CreateCard(CardType.MoveCard, "", 0, this.model.Board[0]));
@@ -353,14 +345,34 @@ namespace Monopoly
             Dice d1 = new Dice();
             Dice d2 = new Dice();
 
-            PlayersCreation();
+            //PlayersCreation();
+            this.model.Players.Add(new Player("alex", this.model.Board[0], '+'));
+            this.model.Players.Add(new Player("damien", this.model.Board[0], '*'));
+            MyObserverFactory of = new MyObserverFactory();
+            PlayerObserver al = (PlayerObserver)of.CreateObserver(ObserverType.PlayerObserver, null, this.model.Players[0]);
+            PlayerObserver da = (PlayerObserver)of.CreateObserver(ObserverType.PlayerObserver, null, this.model.Players[1]);
 
+            BoardObserver bo = (BoardObserver)of.CreateObserver(ObserverType.BoardObserver, this.model.BoardGame);
+            this.model.Observers.Add(al);
+            this.model.Observers.Add(da);
+            this.model.Observers.Add(bo);
             foreach(Player p in this.model.Players)
             {
                 this.model.Board[0].ListPlayers.Add(p);
                 this.model.BoardGame.TheBoard[10, 10].AddPlayer(p);
             }
-
+            /*for (int i = 0; i < this.model.Observers.Count; i++)
+            {
+                Console.WriteLine(i + " " + this.model.Observers[i].name);
+            }
+            Console.ReadKey();*/
+            int[] indexes = new int[] { 10, 10 };
+            List<int[]> ids = new List<int[]>();
+            ids.Add(indexes);
+            this.model.Observers[this.model.Observers.Count - 1].update(ids, null, false, this.model.BoardGame);
+            //Console.WriteLine("ok0");
+            this.model.Observers[this.model.Observers.Count-1].Display();
+            //Console.WriteLine("ok1");
             while (!this.model.End)  //while the game continues
             {
                 this.model.Players[index].Play = true;    //Player index plays
@@ -440,13 +452,16 @@ namespace Monopoly
                 {
                     if (this.model.Players[index].Position.Name == "Luck")
                     {
+                        Console.WriteLine("press any key to pick a card");
+                        Console.ReadKey();
                         Random rand = new Random();
-                        int rnd = rand.Next(0, this.model.Cards.Count);
+                        int rnd = rand.Next(16, this.model.Cards.Count);
                         int positionIndex = this.model.Players[index].Position.Index;
-                        this.model.Cards[rnd].Action(this.model.Players[index]);
+                        this.model.Players[index] = this.model.Cards[rnd].Action(this.model.Players[index]);
 
-                        if (this.model.Cards[rnd].GetType() == CardType.MoveCard.GetType())   //if it was a MoveCard
+                        if (this.model.Cards[rnd].GetType() == this.model.Cards[16].GetType())   //if it was a MoveCard
                         {
+                            Console.WriteLine("you're moving to " + this.model.Players[index].Position.Name);
                             MovePlayer(positionIndex, this.model.Players[index].Position.Index);
                             PositionAction();          //the player is now on a new street, so the game has to execute this function again
                         }
@@ -461,14 +476,16 @@ namespace Monopoly
 
         public void Roll(Dice d1, Dice d2)
         {
+            //asks to phe player if he wants to check his money and properties
             Console.WriteLine(this.model.Players[index].Name + " plays");
             Console.WriteLine("do you want to check your money and your properties or to build houses somewhere? press 1 to see");
+
             string answer = Console.ReadLine();
             if (answer == "1")
             {
-                this.model.Observers[index].Display();
+                this.model.Observers[index].Display();    //displays player's money and properties
 
-                if (this.model.Players[index].Neighborhoods.Count > 0)
+                if (this.model.Players[index].Neighborhoods.Count > 0)      //if the player ownes at least one complete neighborhood he can build houses
                 {
                     Console.WriteLine("Do you want to build houses somewhere ? Press 1 to build houses");
                     string answer2 = Console.ReadLine();
@@ -485,29 +502,30 @@ namespace Monopoly
             }
             else
             {
-                d1.roll();
+                //the program randomly rolls the dices
+                d1.rollTest();
                 Console.WriteLine("Dice 1 : " + d1.CurrentFace);
-                d2.roll();
+                d2.rollTest();
                 Console.WriteLine("Dice 2 : " + d2.CurrentFace);
                 Console.WriteLine("total roll : " + Convert.ToString(d1.CurrentFace + d2.CurrentFace));
 
                 int InitialPositionIndex = this.model.Players[index].Position.Index;
                 int PositionIndex = InitialPositionIndex;
-                this.model.Board[PositionIndex].ListPlayers.Remove(this.model.Players[index]);
-                /**/
+                this.model.Board[PositionIndex].ListPlayers.Remove(this.model.Players[index]);    //the player lefts his former position
+                
                 PositionIndex += d1.CurrentFace + d2.CurrentFace;
-                if (PositionIndex > 40)
+                if (PositionIndex > 40)          //the player earns 200euros if he goes through the starting point
                 {
                     this.model.Players[index].Balance += 200;
                     Console.WriteLine("you earned 200Euros!");
                 }
-                this.model.Observers[index].update(null, this.model.Players[index]);
+                this.model.Observers[index].update(null, this.model.Players[index]);         //the player's observer updates his money
 
                 PositionIndex %= 40;
                 this.model.Players[index].Position = this.model.Board[PositionIndex];
-                this.model.Board[PositionIndex].ListPlayers.Add(this.model.Players[index]);
-
-                MovePlayer(InitialPositionIndex, PositionIndex);
+                this.model.Board[PositionIndex].ListPlayers.Add(this.model.Players[index]);        //the player arrives at his new position
+                Console.ReadKey();
+                MovePlayer(InitialPositionIndex, PositionIndex);              //the player moves on the board
 
                 if (d1.CurrentFace != d2.CurrentFace)
                 {
@@ -520,7 +538,7 @@ namespace Monopoly
                 if (this.model.Players[index].Position.Index == 30 || this.model.Players[index].ConsecutivesTurns == 3)
                 {
                     Console.WriteLine("YOU GO TO JAIL");
-                    this.model.Players[index].ConsecutivesTurns = 1;
+                    this.model.Players[index].ConsecutivesTurns = 0;
                     this.model.Players[index].Position = this.model.Board[10];
                     this.model.Board[PositionIndex].ListPlayers.Remove(this.model.Players[index]);
                     this.model.Board[10].ListPlayers.Add(this.model.Players[index]);
@@ -544,7 +562,7 @@ namespace Monopoly
             j = indexes[1][1];
             this.model.BoardGame.TheBoard[i, j].AddPlayer(this.model.Players[index]);
 
-            this.model.Observers[this.model.Observers.Count - 1].update(indexes, null, this.model.BoardGame);
+            this.model.Observers[this.model.Observers.Count - 1].update(indexes, null, false, this.model.BoardGame);
             this.model.Observers[this.model.Observers.Count - 1].Display();
         }
 
@@ -556,42 +574,49 @@ namespace Monopoly
                 Console.WriteLine("you can build houses in the following neighborhoods");
                 foreach (Neighborhood n in this.model.Players[index].Neighborhoods)
                     Console.WriteLine(n.Name + " neighborhood (id = " + n.ID + ")");
-                int Nid = -1;
-                while (!ExistNeighborhood(Nid))
+
+                int Nid = -1;                  //Nid is the neighborhood's index
+                while (!ExistNeighborhood(Nid))      //the program checks if this index exists
                 {
                     Console.WriteLine("enter the id of the neighborhood where you want to build houses");
                     Nid = Convert.ToInt32(Console.ReadLine());
                 }
-                if (this.model.ListNeighborhood[Nid].CurrentIndex < 0)
+
+                if (this.model.ListNeighborhood[Nid].CurrentIndex < 0)           //if there are no houses in this neighborhood
                 {
                     Console.WriteLine("where do you want to build the first house ?");
                     foreach (int i in this.model.Players[index].Neighborhoods[Nid].Avenues)
                         Console.WriteLine(this.model.Board[i].Name + "(id = " + i + ")");
 
-                    int Sid = -1;
-                    while (ExistStreet(Sid, Nid))
+                    int Sid = -1;              //Sid is the street's index
+                    while (ExistStreet(Sid, Nid))         //the program checks if this id exists
                     {
                         Console.WriteLine("enter the  street id");
                         Sid = Convert.ToInt32(Console.ReadLine());
                     }
+                    //currentIndex is the street's index where the next house will be built
                     this.model.ListNeighborhood[Nid].CurrentIndex = this.model.Players[index].Neighborhoods[Nid].Avenues.IndexOf(Sid);
                 }
+
                 int Nhouses = -1;
                 while (Nhouses < 0)
                 {
                     Console.WriteLine("how many houses do you want to build ?");
                     Nhouses = Convert.ToInt32(Console.ReadLine());
                 }
-                List<int[]> Indexes1 = new List<int[]>();
-                List<int[]> Indexes2 = new List<int[]>();
+
+                List<int[]> Indexes1 = new List<int[]>();              //this list contains the streets' indexes in the matrix board. it will be used to update the board's observer
+                List<int[]> Indexes2 = new List<int[]>();              //this list contains the street's index. it will be used to update the players's observer
+
                 for (int i = 0; i < Nhouses; i++)
                 {
-                    if (this.model.Players[index].Balance >= this.model.ListNeighborhood[Nid].HousePrice)
+                    if (this.model.Players[index].Balance >= this.model.ListNeighborhood[Nid].HousePrice)       //if the player has enough money to build this house
                     {
-                        this.model.Board[this.model.ListNeighborhood[Nid].Avenues[this.model.ListNeighborhood[Nid].CurrentIndex]].HousesNumber++;
-                        this.model.Board[this.model.ListNeighborhood[Nid].Avenues[this.model.ListNeighborhood[Nid].CurrentIndex]].Rent *= 2;
-                        this.model.Players[index].Balance -= this.model.ListNeighborhood[Nid].HousePrice;
+                        this.model.Board[this.model.ListNeighborhood[Nid].Avenues[this.model.ListNeighborhood[Nid].CurrentIndex]].HousesNumber++;      //the program adds a house on this street
+                        this.model.Board[this.model.ListNeighborhood[Nid].Avenues[this.model.ListNeighborhood[Nid].CurrentIndex]].Rent *= 2;             //the rent is doubled
+                        this.model.Players[index].Balance -= this.model.ListNeighborhood[Nid].HousePrice;             //the player's money is updated
                         
+                        //the programs searches the street's indexes in the matrix board
                         int[] indexes1 = SearchStreetIndexes(this.model.Board[this.model.ListNeighborhood[Nid].Avenues[this.model.ListNeighborhood[Nid].CurrentIndex]].Index);
                         if (!Indexes1.Contains(indexes1))
                             Indexes1.Add(indexes1);
@@ -610,6 +635,7 @@ namespace Monopoly
 
                         this.model.BoardGame.TheBoard[indexes1[0], indexes1[1]].AddHouse();
                         this.model.ListNeighborhood[Nid].CurrentIndex++;
+                        this.model.ListNeighborhood[Nid].CurrentIndex %= this.model.ListNeighborhood[Nid].Avenues.Count;
                     }
                     else
                     {
@@ -618,7 +644,7 @@ namespace Monopoly
                     }
                                         
                 }
-                this.model.Observers[this.model.Observers.Count - 1].update(Indexes1, null, this.model.BoardGame);
+                this.model.Observers[this.model.Observers.Count - 1].update(Indexes1, null, false, this.model.BoardGame);
                 this.model.Observers[index].update(Indexes2, this.model.Players[index]);
 
                 this.model.Observers[this.model.Observers.Count - 1].Display();
@@ -634,7 +660,10 @@ namespace Monopoly
         {
             this.model.Players[index].JailTurn++;
             d1.roll();
+            Console.WriteLine("Dice 1 : " + d1.CurrentFace);
             d2.roll();
+            Console.WriteLine("Dice 2 : " + d2.CurrentFace);
+            Console.WriteLine("total roll : " + Convert.ToString(d1.CurrentFace + d2.CurrentFace));
             if (this.model.Players[index].JailTurn > 3 || d1.CurrentFace == d2.CurrentFace)
             {
                 this.model.Board[10].ListPlayers.Remove(this.model.Players[index]);
@@ -644,8 +673,11 @@ namespace Monopoly
                 this.model.Players[index].Position = this.model.Board[PositionIndex];
                 this.model.Board[PositionIndex].ListPlayers.Add(this.model.Players[index]);
                 MovePlayer(10, PositionIndex);
+                this.model.Players[index].Jail = false;
             }
-            this.model.Players[index].Jail = false;
+            else
+                this.model.Players[index].Play = false;
+            
         }
 
         public void BuyAPlace()
@@ -666,12 +698,20 @@ namespace Monopoly
                     this.model.Players[index].Properties.Add(this.model.Players[index].Position);          //the place is added to the player's properties
                     this.model.Players[index].Properties.Sort();                                     //the list is sorted by index
                     Console.WriteLine("Congratulations, now you owe " + this.model.Players[index].Position.Name);
-                    CheckForNeighborhood(this.model.Players[index].Position.Index);
-                    if (this.model.Players[index].Position.Index % 10 + 5 == 0)      //if the property is a train station
+                    
+                    
+                    if (this.model.Players[index].Position.Index % 10 == 5)      //if the property is a train station
                     {
                         UpdateStationRent();
                     }
-                    this.model.Observers[index].update(null, this.model.Players[index]);
+                    else
+                    {
+                        if (this.model.Players[index].Position.Index != 12 && this.model.Players[index].Position.Index != 28)   //if the property is not a company
+                        {
+                            CheckForNeighborhood(this.model.Players[index].Position.Index);
+                        }
+                    }
+                    this.model.Observers[index].update(null, this.model.Players[index], true);
 
                 }
             }
@@ -711,15 +751,15 @@ namespace Monopoly
         public int SearchNeighborhoodID(int avenueIndex)
         {
             int NeighborhoodID = -1;
-            for (int i = 0; i < this.model.ListNeighborhood.Count; i++)
+            bool Continue = true;
+            for (int i = 0; i < this.model.ListNeighborhood.Count && Continue; i++)
             {
-                for (int j = 0; j < this.model.ListNeighborhood[i].Avenues.Count; j++)
+                for (int j = 0; j < this.model.ListNeighborhood[i].Avenues.Count && Continue; j++)
                 {
                     if (avenueIndex == this.model.ListNeighborhood[i].Avenues[j])
                     {
                         NeighborhoodID = i;
-                        i = this.model.ListNeighborhood.Count;
-                        j = this.model.ListNeighborhood[i].Avenues.Count;
+                        Continue = false;
                     }
                 }
             }
@@ -740,7 +780,7 @@ namespace Monopoly
         {
             List<int> listStations = new List<int>();
             int coefficient = 1;
-            for (int i = 1; i < 5; i++)
+            for (int i = 0; i < 4; i++)
             {
                 if (this.model.Board[5 + 10 * i].Owner == this.model.Players[index])
                 {
@@ -791,9 +831,8 @@ namespace Monopoly
                     Console.WriteLine("Sorry, but this symbol is already used by the game, please choose another one");
                     symbol = Convert.ToChar(Console.ReadLine());
                 }
-
                 this.model.Players.Add(new Player(name, this.model.Board[0], symbol));
-                PlayerObserver po = (PlayerObserver)of.CreateObserver(ObserverType.PlayerObserver);
+                PlayerObserver po = (PlayerObserver)of.CreateObserver(ObserverType.PlayerObserver, null, this.model.Players[this.model.Players.Count - 1]);
                 this.model.Observers.Add(po);
             }
 
@@ -900,35 +939,39 @@ namespace Monopoly
             return id;
         }
 
-        public int[] SearchStreetIndexes(int index)
+        public int[] SearchStreetIndexes(int id)
         {
+            //searches a street's indexes in the matrix board
             int[] indexes = new int[2];
-            for (int j = 0; j <= 10; j++)
+            bool end = false;
+            for (int j = 0; j <= 10 && !end; j++)
             {
-                if (this.model.BoardGame.TheBoard[j,0].Street == index)
+                if (this.model.BoardGame.TheBoard[j,0].Street == id)
                 {
                     indexes[0] = j;
                     indexes[1] = 0;
-                    j = 11;
+                    end = true;
                 }
-                if (this.model.BoardGame.TheBoard[j, 10].Street == index)
+                if (this.model.BoardGame.TheBoard[j, 10].Street == id)
                 {
                     indexes[0] = j;
                     indexes[1] = 10;
-                    j = 11;
+                    end = true;
                 }
-                if (this.model.BoardGame.TheBoard[0, j].Street == index)
+                if (this.model.BoardGame.TheBoard[0, j].Street == id)
                 {
                     indexes[0] = 0;
                     indexes[1] = j;
-                    j = 11;
+                    end = true;
                 }
-                if (this.model.BoardGame.TheBoard[10, j].Street == index)
+                if (this.model.BoardGame.TheBoard[10, j].Street == id)
                 {
                     indexes[0] = 10;
                     indexes[1] = j;
-                    j = 11;
+                    end = true;
                 }
+                if (end)
+                    j = 11;
             }
             return indexes;
         }

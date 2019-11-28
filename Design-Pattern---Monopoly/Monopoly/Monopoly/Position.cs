@@ -24,6 +24,7 @@ namespace Monopoly
             this.goToJail = false;
             this.visitJail = false;
             this.housesNumber = 0;
+            this.listPlayers = new List<Player>();
         }
 
         public int Index

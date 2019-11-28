@@ -12,6 +12,7 @@ namespace Monopoly
         public GameBoard()
         {
             this.theBoard = new Cell[11, 11];
+            this.lenght = 6;
         }
 
         public Cell[,] TheBoard

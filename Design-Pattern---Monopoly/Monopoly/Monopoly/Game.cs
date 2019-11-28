@@ -19,6 +19,10 @@ namespace Monopoly
         {
             this.board = new Position[40];
             this.boardGame = new GameBoard();
+            this.observers = new List<IObserver>();
+            this.cards = new List<Icard>();
+            this.players = new List<Player>();
+            this.listNeighborhood = new List<Neighborhood>();
         }
 
         public static Game GetInstance()
@@ -71,8 +75,8 @@ namespace Monopoly
 
         public List<Icard> Cards
         {
-            get { return this.Cards; }
-            set { this.Cards = value; }
+            get { return this.cards; }
+            set { this.cards = value; }
         }
 
 

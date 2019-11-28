@@ -7,32 +7,26 @@ namespace Monopoly
     class Cell
     {
         private int street;
-        private int lenght;
         private char[,] matrix;
         private int rentLine;
 
-        public Cell(int street, int lenght)
+        public Cell(int street)
         {
             this.street = street;
-            this.lenght = lenght;
+            this.matrix = new char[6, 6];
+            this.FillCell();
         }
 
-        public Cell(int lenght)
+        public Cell()
         {
-            this.lenght = lenght;
-            this.matrix = new char[lenght, lenght];
+            this.matrix = new char[6, 6];
+            this.FillNullCell();
         }
 
         public int Street
         {
             get { return this.street; }
             set { this.street = value; }
-        }
-
-        public int Lenght
-        {
-            get { return this.lenght; }
-            set { this.lenght = value; }
         }
 
         public char[,] Matrix
@@ -49,42 +43,58 @@ namespace Monopoly
 
         public void FillCell()
         {
-            matrix[0, 0] = '|';
-            for(int k = 1; k < lenght-1; k++)
+            for (int i = 0; i < 6; i++)
             {
-                matrix[0, k] = '-';
-                matrix[lenght - 2, k] = '-';
-                matrix[k, 0] = '|';
-                matrix[k, lenght - 1] = '|';
+                this.matrix[i, 0] = '|';
+                this.matrix[i, 5] = '|';
             }
-            matrix[lenght - 1, lenght - 1] = '|';
-            for (int i = 1; i < this.lenght-1; i++)
+            for (int j = 1; j < 5; j++)
             {
-                for (int j = 1; j < this.lenght-1; j++)
+                this.matrix[0, j] = '-';
+                this.matrix[5, j] = '-';
+            }
+            for(int i = 1; i < 5; i++)
+            {
+                for (int j= 1; j < 5; j++)
                 {
-                    matrix[i, j] = ' ';
+                    this.matrix[i, j] = ' ';
                 }
             }
-            
         }
+
         public void AddPlayer(Player p)
         {
-            int index = 0;
-            while (this.matrix[this.lenght/2, index] != ' ')
+            int i = 3;
+            int j = 1;
+            while (this.matrix[i,j] != ' ')
             {
-                index++;
+                if (j == 5)
+                {
+                    j = 1;
+                    i++;
+                }
+                else 
+                    j++;
             }
-            this.matrix[this.lenght / 2, index] = p.Symbol;
+            
+            this.matrix[i,j] = p.Symbol;
         }
 
         public void RemovePlayer(Player p)
         {
-            int index = 0;
-            while (this.matrix[this.lenght / 2, index] != p.Symbol)
+            int i = 3;
+            int j = 1;
+            while(this.matrix[i,j] != p.Symbol)
             {
-                index++;
+                if (j == 5)
+                {
+                    j = 1;
+                    i++;
+                }
+                else
+                    j++;
             }
-            this.matrix[this.lenght / 2, index] = ' ';
+            this.matrix[i, j] = ' ';
         }
 
         public void AddHouse()
@@ -100,9 +110,9 @@ namespace Monopoly
 
         public void FillNullCell()
         {
-            for (int i = 0; i < this.lenght; i++)
+            for (int i = 0; i < 6; i++)
             {
-                for (int j = 0; j < this.lenght; j++)
+                for (int j = 0; j < 6; j++)
                 {
                     matrix[i, j] = ' ';
                 }

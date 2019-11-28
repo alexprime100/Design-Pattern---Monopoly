@@ -6,9 +6,10 @@ namespace Monopoly
 {
     interface IObserver
     {
-        public abstract void update(List<int[]> indexes, Player player = null, GameBoard board = null);
+        public string name { get; set; }
+        public  void update(List<int[]> indexes, Player player = null, bool add = false, GameBoard board = null);
 
-        public abstract void Display();
+        public  void Display();
 
     }
 }
