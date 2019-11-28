@@ -29,7 +29,7 @@ namespace Monopoly
 
         public int ID
         {
-            get { return this.ID; }
+            get { return this.id; }
             set { this.id = value; }
         }
 

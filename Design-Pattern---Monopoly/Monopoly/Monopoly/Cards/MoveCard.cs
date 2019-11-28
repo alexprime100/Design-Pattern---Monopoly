@@ -20,7 +20,7 @@ namespace Monopoly
             this.message += this.newStreet.Name;
             Console.WriteLine(this.message);
             p.Position = this.newStreet;
-            
+            Console.ReadKey();
             return p;
         }
     }

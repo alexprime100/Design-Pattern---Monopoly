@@ -450,26 +450,42 @@ namespace Monopoly
                 }
                 else
                 {
-                    if (this.model.Players[index].Position.Name == "Luck")
+                    if (this.model.Players[index].Position.Index == 30)
                     {
-                        Console.WriteLine("press any key to pick a card");
+                        Console.WriteLine("YOU GO TO JAIL");
                         Console.ReadKey();
-                        Random rand = new Random();
-                        int rnd = rand.Next(16, this.model.Cards.Count);
-                        int positionIndex = this.model.Players[index].Position.Index;
-                        this.model.Players[index] = this.model.Cards[rnd].Action(this.model.Players[index]);
+                        this.model.Players[index].ConsecutivesTurns = 0;
+                        this.model.Players[index].Position = this.model.Board[10];
+                        this.model.Board[30].ListPlayers.Remove(this.model.Players[index]);
+                        this.model.Board[10].ListPlayers.Add(this.model.Players[index]);
+                        this.model.Players[index].Play = false;
+                        this.model.Players[index].Jail = true;
+                        MovePlayer(30, 10);
+                    }
+                    else
+                    {
+                        if (this.model.Players[index].Position.Name == "Luck")
+                        {
+                            Console.WriteLine("press any key to pick a card");
+                            Console.ReadKey();
+                            Random rand = new Random();
+                            int rnd = rand.Next(16, this.model.Cards.Count);
+                            int positionIndex = this.model.Players[index].Position.Index;
+                            this.model.Players[index] = this.model.Cards[rnd].Action(this.model.Players[index]);
 
-                        if (this.model.Cards[rnd].GetType() == this.model.Cards[16].GetType())   //if it was a MoveCard
-                        {
-                            Console.WriteLine("you're moving to " + this.model.Players[index].Position.Name);
-                            MovePlayer(positionIndex, this.model.Players[index].Position.Index);
-                            PositionAction();          //the player is now on a new street, so the game has to execute this function again
-                        }
-                        else
-                        {
-                            this.model.Observers[index].update(null, this.model.Players[index]);
+                            if (this.model.Cards[rnd].GetType() == this.model.Cards[16].GetType())   //if it was a MoveCard
+                            {
+                                Console.WriteLine("you're moving to " + this.model.Players[index].Position.Name);
+                                MovePlayer(positionIndex, this.model.Players[index].Position.Index);
+                                PositionAction();          //the player is now on a new street, so the game has to execute this function again
+                            }
+                            else
+                            {
+                                this.model.Observers[index].update(null, this.model.Players[index]);
+                            }
                         }
                     }
+                    
                 }
             }
         }
@@ -535,9 +551,10 @@ namespace Monopoly
                 {
                     this.model.Players[index].ConsecutivesTurns++;
                 }
-                if (this.model.Players[index].Position.Index == 30 || this.model.Players[index].ConsecutivesTurns == 3)
+                if (this.model.Players[index].ConsecutivesTurns == 3)
                 {
                     Console.WriteLine("YOU GO TO JAIL");
+                    Console.ReadKey();
                     this.model.Players[index].ConsecutivesTurns = 0;
                     this.model.Players[index].Position = this.model.Board[10];
                     this.model.Board[PositionIndex].ListPlayers.Remove(this.model.Players[index]);
@@ -589,7 +606,7 @@ namespace Monopoly
                         Console.WriteLine(this.model.Board[i].Name + "(id = " + i + ")");
 
                     int Sid = -1;              //Sid is the street's index
-                    while (ExistStreet(Sid, Nid))         //the program checks if this id exists
+                    while (!ExistStreet(Sid, Nid))         //the program checks if this id exists
                     {
                         Console.WriteLine("enter the  street id");
                         Sid = Convert.ToInt32(Console.ReadLine());
@@ -610,10 +627,12 @@ namespace Monopoly
 
                 for (int i = 0; i < Nhouses; i++)
                 {
-                    if (this.model.Players[index].Balance >= this.model.ListNeighborhood[Nid].HousePrice)       //if the player has enough money to build this house
+                    int streetIndex = this.model.ListNeighborhood[Nid].Avenues[this.model.ListNeighborhood[Nid].CurrentIndex];
+
+                    if (this.model.Players[index].Balance >= this.model.ListNeighborhood[Nid].HousePrice && this.model.Board[streetIndex].HousesNumber < 8)       //if the player has enough money to build this house
                     {
-                        this.model.Board[this.model.ListNeighborhood[Nid].Avenues[this.model.ListNeighborhood[Nid].CurrentIndex]].HousesNumber++;      //the program adds a house on this street
-                        this.model.Board[this.model.ListNeighborhood[Nid].Avenues[this.model.ListNeighborhood[Nid].CurrentIndex]].Rent *= 2;             //the rent is doubled
+                        this.model.Board[streetIndex].HousesNumber++;      //the program adds a house on this street
+                        this.model.Board[streetIndex].Rent *= 2;             //the rent is doubled
                         this.model.Players[index].Balance -= this.model.ListNeighborhood[Nid].HousePrice;             //the player's money is updated
                         
                         //the programs searches the street's indexes in the matrix board
@@ -639,7 +658,10 @@ namespace Monopoly
                     }
                     else
                     {
-                        Console.WriteLine("You don't have enough money to build more houses");
+                        if (this.model.Players[index].Balance < this.model.ListNeighborhood[Nid].HousePrice)
+                            Console.WriteLine("You don't have enough money to build more houses");
+                        if (this.model.Board[streetIndex].HousesNumber >= 8)
+                            Console.WriteLine("you cannot build more than 8 houses on a street");
                         i = Nhouses;
                     }
                                         
@@ -674,6 +696,7 @@ namespace Monopoly
                 this.model.Board[PositionIndex].ListPlayers.Add(this.model.Players[index]);
                 MovePlayer(10, PositionIndex);
                 this.model.Players[index].Jail = false;
+                this.model.Players[index].Play = false;
             }
             else
                 this.model.Players[index].Play = false;
@@ -698,7 +721,7 @@ namespace Monopoly
                     this.model.Players[index].Properties.Add(this.model.Players[index].Position);          //the place is added to the player's properties
                     this.model.Players[index].Properties.Sort();                                     //the list is sorted by index
                     Console.WriteLine("Congratulations, now you owe " + this.model.Players[index].Position.Name);
-                    
+                    this.model.Observers[index].update(null, this.model.Players[index], true);
                     
                     if (this.model.Players[index].Position.Index % 10 == 5)      //if the property is a train station
                     {
@@ -711,8 +734,6 @@ namespace Monopoly
                             CheckForNeighborhood(this.model.Players[index].Position.Index);
                         }
                     }
-                    this.model.Observers[index].update(null, this.model.Players[index], true);
-
                 }
             }
         }
@@ -721,8 +742,8 @@ namespace Monopoly
         {
             //check if the player ownes every other streets of the neighborhood
             bool CompleteNeighborhood = true;
-            int NeighborhoodID = SearchNeighborhoodID(avenueIndex);
-            foreach(int i in this.model.ListNeighborhood[NeighborhoodID].Avenues)
+            int NeighborhoodID = SearchNeighborhoodID(avenueIndex);     //searches the neighborhood's id
+            foreach(int i in this.model.ListNeighborhood[NeighborhoodID].Avenues)     //if there is one street in the neighborhood that the player doesn't owne, the neighborhood is not owned
             {
                 if (!this.model.Players[index].Properties.Contains(this.model.Board[i]))
                     CompleteNeighborhood = false;
@@ -731,7 +752,7 @@ namespace Monopoly
             {
                 Console.WriteLine("Congratulations, now you owe the whole " + this.model.ListNeighborhood[NeighborhoodID].Name + " neighborhood!");
                 Console.WriteLine("every rents are doubled, and you can add houses!");
-                foreach (int i in this.model.ListNeighborhood[NeighborhoodID].Avenues)
+                foreach (int i in this.model.ListNeighborhood[NeighborhoodID].Avenues)     //every rents are doubled
                 {
                     this.model.Board[i].Rent *= 2;
                 }
@@ -740,6 +761,7 @@ namespace Monopoly
                 List<int[]> indexes = new List<int[]>();
                 foreach (int x in this.model.ListNeighborhood[NeighborhoodID].Avenues)
                     indexes.Add(new int[] { x });
+
                 this.model.Observers[index].update(indexes, this.model.Players[index]);
                 Console.WriteLine("Do you want to build houses now ? (press 1)");
                 string answer = Console.ReadLine();

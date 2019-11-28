@@ -20,6 +20,7 @@ namespace Monopoly
             this.message += this.Money + "Euros";
             Console.WriteLine(message);
             p.Balance += this.Money;
+            Console.ReadKey();
             return p;
         }
     }

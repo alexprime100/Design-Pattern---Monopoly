@@ -38,15 +38,18 @@ namespace Monopoly
 
                     bool end2 = false;
                     int index2 = -1;
-                    for (int i = 0; i < this.player.Properties.Count && !end2; i++)
+                    Console.WriteLine("x[0]=" + x[0]);
+                    for (int j = 0; j < this.player.Properties.Count && !end2; j++)
                     {
-                        if (this.properties[i].Property.Index == x[0])
+                        Console.WriteLine(j + "/" + this.player.Properties.Count + " => " + this.player.Properties[j].Index);
+                        if (this.player.Properties[j].Index == x[0])
                         {
-                            index2 = i;
+                            index2 = j;
                             end2 = true;
                         }
                     }
-
+                    //Console.WriteLine(index1 + "/" + this.properties.Count);
+                    Console.WriteLine(index2 + "/" + this.player.Properties.Count);
                     this.properties[index1].Property = this.player.Properties[index2];
                     this.properties[index1].UpdateDescription();
                 }
@@ -63,7 +66,7 @@ namespace Monopoly
        public void Display()
         {
             Console.WriteLine("You have " + this.player.Balance + "Euros\n");
-            Console.Write("And you owne ");
+            Console.WriteLine("And you owne ");
             if (this.properties.Count == 0)
                 Console.WriteLine("nothing");
             foreach(var x in this.properties)
