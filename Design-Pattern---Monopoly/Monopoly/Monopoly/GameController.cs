@@ -7,7 +7,7 @@ namespace Monopoly
     class GameController
     {
         private Game model;
-        private int index;
+        private int index;                //index of the player who is playing
 
         public GameController(Game model)
         {
@@ -162,6 +162,9 @@ namespace Monopoly
             this.model.Board[15].Rent = 25;
             this.model.Board[25].Rent = 25;
             this.model.Board[35].Rent = 25;
+
+            this.model.Board[12].Rent = 4;
+            this.model.Board[28].Rent = 4;
 
             this.model.Board[1].Rent = 2;
             this.model.Board[4].Rent = 200;
@@ -341,10 +344,7 @@ namespace Monopoly
         public void Start()
         {
             this.initialization();
-            //create dices
-            Dice d1 = new Dice();
-            Dice d2 = new Dice();
-
+            
             //PlayersCreation();
             this.model.Players.Add(new Player("alex", this.model.Board[0], '+'));
             this.model.Players.Add(new Player("damien", this.model.Board[0], '*'));
@@ -378,7 +378,7 @@ namespace Monopoly
                 this.model.Players[index].Play = true;    //Player index plays
                 while (this.model.Players[index].Play)
                 {
-                    PlayATurn(d1, d2);
+                    PlayATurn();
                 }
 
                 if (this.model.Players[index].Balance == 0)    //if this player is ruined, he is removed
@@ -404,9 +404,9 @@ namespace Monopoly
             Console.WriteLine(this.model.Players[winner].Name + "!!!");
         }
 
-        public void PlayATurn(Dice d1, Dice d2)
+        public void PlayATurn()
         {
-            Roll(d1, d2);
+            Roll();
             PositionAction();
         }
 
@@ -490,7 +490,7 @@ namespace Monopoly
             }
         }
 
-        public void Roll(Dice d1, Dice d2)
+        public void Roll()
         {
             //asks to phe player if he wants to check his money and properties
             Console.WriteLine(this.model.Players[index].Name + " plays");
@@ -514,22 +514,22 @@ namespace Monopoly
             Console.ReadKey();
             if (this.model.Players[index].Jail)
             {
-                jailRoll(d1, d2);
+                jailRoll();
             }
             else
             {
                 //the program randomly rolls the dices
-                d1.rollTest();
-                Console.WriteLine("Dice 1 : " + d1.CurrentFace);
-                d2.rollTest();
-                Console.WriteLine("Dice 2 : " + d2.CurrentFace);
-                Console.WriteLine("total roll : " + Convert.ToString(d1.CurrentFace + d2.CurrentFace));
+                this.model.D1.roll();
+                Console.WriteLine("Dice 1 : " + this.model.D1.CurrentFace);
+                this.model.D2.roll();
+                Console.WriteLine("Dice 2 : " + this.model.D2.CurrentFace);
+                Console.WriteLine("total roll : " + Convert.ToString(this.model.D1.CurrentFace + this.model.D2.CurrentFace));
 
                 int InitialPositionIndex = this.model.Players[index].Position.Index;
                 int PositionIndex = InitialPositionIndex;
                 this.model.Board[PositionIndex].ListPlayers.Remove(this.model.Players[index]);    //the player lefts his former position
                 
-                PositionIndex += d1.CurrentFace + d2.CurrentFace;
+                PositionIndex += this.model.D1.CurrentFace + this.model.D2.CurrentFace;
                 if (PositionIndex > 40)          //the player earns 200euros if he goes through the starting point
                 {
                     this.model.Players[index].Balance += 200;
@@ -543,7 +543,7 @@ namespace Monopoly
                 Console.ReadKey();
                 MovePlayer(InitialPositionIndex, PositionIndex);              //the player moves on the board
 
-                if (d1.CurrentFace != d2.CurrentFace)
+                if (this.model.D1.CurrentFace != this.model.D2.CurrentFace)
                 {
                     this.model.Players[index].Play = false;
                 }
@@ -678,20 +678,20 @@ namespace Monopoly
             
         }
 
-        public void jailRoll(Dice d1, Dice d2)
+        public void jailRoll()
         {
             this.model.Players[index].JailTurn++;
-            d1.roll();
-            Console.WriteLine("Dice 1 : " + d1.CurrentFace);
-            d2.roll();
-            Console.WriteLine("Dice 2 : " + d2.CurrentFace);
-            Console.WriteLine("total roll : " + Convert.ToString(d1.CurrentFace + d2.CurrentFace));
-            if (this.model.Players[index].JailTurn > 3 || d1.CurrentFace == d2.CurrentFace)
+            this.model.D1.roll();
+            Console.WriteLine("Dice 1 : " + this.model.D1.CurrentFace);
+            this.model.D2.roll();
+            Console.WriteLine("Dice 2 : " + this.model.D2.CurrentFace);
+            Console.WriteLine("total roll : " + Convert.ToString(this.model.D1.CurrentFace + this.model.D2.CurrentFace));
+            if (this.model.Players[index].JailTurn > 3 || this.model.D1.CurrentFace == this.model.D2.CurrentFace)
             {
                 this.model.Board[10].ListPlayers.Remove(this.model.Players[index]);
                 this.model.Players[index].JailTurn = 0;
                 int PositionIndex = 10;
-                PositionIndex += d1.CurrentFace + d2.CurrentFace;
+                PositionIndex += this.model.D1.CurrentFace + this.model.D2.CurrentFace;
                 this.model.Players[index].Position = this.model.Board[PositionIndex];
                 this.model.Board[PositionIndex].ListPlayers.Add(this.model.Players[index]);
                 MovePlayer(10, PositionIndex);
@@ -732,6 +732,10 @@ namespace Monopoly
                         if (this.model.Players[index].Position.Index != 12 && this.model.Players[index].Position.Index != 28)   //if the property is not a company
                         {
                             CheckForNeighborhood(this.model.Players[index].Position.Index);
+                        }
+                        else
+                        {
+                            UpdateCompaniesRent();
                         }
                     }
                 }
@@ -790,12 +794,26 @@ namespace Monopoly
 
         public void PayRent()
         {
-            Console.WriteLine("you owe " + this.model.Players[index].Position.Rent + " Euros to " + this.model.Players[index].Position.Owner.Name);
-            this.model.Players[index].Balance -= this.model.Players[index].Position.Rent;       //the player's money is updated
-            int idPlayer = SearchPlayerID(this.model.Players[index].Position.Owner.Name);       //search of the owner's index
-            this.model.Players[idPlayer].Balance += this.model.Players[index].Position.Rent;    //the owner's money is updated
-            this.model.Observers[index].update(null, this.model.Players[index]);
-            this.model.Observers[idPlayer].update(null, this.model.Players[idPlayer]);
+            if (this.model.Players[index].Position.Index == 12 || this.model.Players[index].Position.Index == 28)
+            {
+                int totalRoll = this.model.D1.CurrentFace + this.model.D1.CurrentFace;
+                Console.WriteLine("you owe " + (this.model.Players[index].Position.Rent * totalRoll) + " Euros to " + this.model.Players[index].Position.Owner.Name);
+                this.model.Players[index].Balance -= this.model.Players[index].Position.Rent * totalRoll;       //the player's money is updated
+                int idPlayer = SearchPlayerID(this.model.Players[index].Position.Owner.Name);       //search of the owner's index
+                this.model.Players[idPlayer].Balance += this.model.Players[index].Position.Rent * totalRoll;    //the owner's money is updated
+                this.model.Observers[index].update(null, this.model.Players[index]);
+                this.model.Observers[idPlayer].update(null, this.model.Players[idPlayer]);
+            }
+            else
+            {
+                Console.WriteLine("you owe " + this.model.Players[index].Position.Rent + " Euros to " + this.model.Players[index].Position.Owner.Name);
+                this.model.Players[index].Balance -= this.model.Players[index].Position.Rent;       //the player's money is updated
+                int idPlayer = SearchPlayerID(this.model.Players[index].Position.Owner.Name);       //search of the owner's index
+                this.model.Players[idPlayer].Balance += this.model.Players[index].Position.Rent;    //the owner's money is updated
+                this.model.Observers[index].update(null, this.model.Players[index]);
+                this.model.Observers[idPlayer].update(null, this.model.Players[idPlayer]);
+            }
+            
         }
 
         public void UpdateStationRent()
@@ -817,6 +835,15 @@ namespace Monopoly
                 indexes.Add(new int[] { listStations[i] });
             }
             this.model.Observers[index].update(indexes, this.model.Players[index]);
+        }
+
+        public void UpdateCompaniesRent()
+        {
+            if (this.model.Board[12].Owner == this.model.Players[index] && this.model.Board[28].Owner == this.model.Players[index])
+            {
+                this.model.Board[12].Rent = 10;
+                this.model.Board[28].Rent = 10;
+            }
         }
 
         public void PlayersCreation()
@@ -994,8 +1021,6 @@ namespace Monopoly
             }
             return indexes;
         }
-
-        
 
     }
 }

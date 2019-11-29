@@ -14,6 +14,8 @@ namespace Monopoly
         private static Game instance;
         private List<IObserver> observers;
         private List<Icard> cards;
+        private Dice d1;
+        private Dice d2;
 
         private Game() 
         {
@@ -23,6 +25,8 @@ namespace Monopoly
             this.cards = new List<Icard>();
             this.players = new List<Player>();
             this.listNeighborhood = new List<Neighborhood>();
+            this.d1 = new Dice();
+            this.d2 = new Dice();
         }
 
         public static Game GetInstance()
@@ -77,6 +81,18 @@ namespace Monopoly
         {
             get { return this.cards; }
             set { this.cards = value; }
+        }
+
+        public Dice D1
+        {
+            get { return this.d1; }
+            set { this.d1 = value; }
+        }
+
+        public Dice D2
+        {
+            get { return this.d2; }
+            set { this.d2 = value; }
         }
 
 
