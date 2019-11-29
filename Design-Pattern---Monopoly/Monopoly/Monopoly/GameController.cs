@@ -822,11 +822,12 @@ namespace Monopoly
         public void PlayersCreation()
         {
             //create the Players
+            Console.WriteLine("there must be at least 2 Players, and at most 8 players");
             Console.WriteLine("How many Players are there ?");
             int nbPlayers = Convert.ToInt32(Console.ReadLine());
-            while (nbPlayers < 2)
+            while (nbPlayers < 2 || nbPlayers > 8)
             {
-                Console.WriteLine("there must be at least 2 Players. Enter the number of Players again");
+                Console.WriteLine("there must be at least 2 players, and at most 8 players. Enter the number of Players again");
                 nbPlayers = Convert.ToInt32(Console.ReadLine());
             }
             this.model.Players = new List<Player>();
@@ -841,18 +842,14 @@ namespace Monopoly
                     Console.WriteLine("this name is already taken, choose another one");
                     name = Console.ReadLine();
                 }
-                Console.WriteLine("enter your symbol");
+                Console.WriteLine("enter a symbol (type char) for your pawn");
                 char symbol = Convert.ToChar(Console.ReadLine());
-                while (Exist(symbol))
+                while (Exist(symbol) || symbol == '#' || symbol == ' ' || symbol == '-' || symbol == '|')    //'#' is used to represent houses, '-' and '|' are used for the board's borders
                 {
-                    Console.WriteLine("this name is already taken, choose another one");
+                    Console.WriteLine("sorry, this symbol is already taken by another player or already used by the game, please choose another one");
                     symbol = Convert.ToChar(Console.ReadLine());
                 }
-                while (symbol == '#' || symbol == ' ')
-                {
-                    Console.WriteLine("Sorry, but this symbol is already used by the game, please choose another one");
-                    symbol = Convert.ToChar(Console.ReadLine());
-                }
+                
                 this.model.Players.Add(new Player(name, this.model.Board[0], symbol));
                 PlayerObserver po = (PlayerObserver)of.CreateObserver(ObserverType.PlayerObserver, null, this.model.Players[this.model.Players.Count - 1]);
                 this.model.Observers.Add(po);

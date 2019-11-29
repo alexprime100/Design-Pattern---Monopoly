@@ -26,6 +26,7 @@ namespace Monopoly
 
         public void rollTest()
         {
+            //this function is used only to make tests
             Console.WriteLine("enter a number : ");
             int number = Convert.ToInt32(Console.ReadLine());
             this.currentFace = number;
