@@ -13,7 +13,7 @@ namespace Monopoly
         private bool play;
         private int consecutivesTurns;
         private List<Position> properties;
-        private List<Neighborhood> neighborhoods;
+        private List<Neighbourhood> neighbourhoods;
         private int balance;
         private char symbol;
 
@@ -28,7 +28,7 @@ namespace Monopoly
             this.balance = 1500;       //money of the player
             this.symbol = symbol;      //pawn used by the player
             this.properties = new List<Position>();      //list of properties
-            this.neighborhoods = new List<Neighborhood>();
+            this.neighbourhoods = new List<Neighbourhood>();
         }
 
         public string Name
@@ -84,10 +84,10 @@ namespace Monopoly
             set { this.properties = value; }
         }
 
-        public List<Neighborhood> Neighborhoods
+        public List<Neighbourhood> Neighbourhoods
         {
-            get { return this.neighborhoods; }
-            set { this.neighborhoods = value; }
+            get { return this.Neighbourhoods; }
+            set { this.Neighbourhoods = value; }
         }
     }
 }

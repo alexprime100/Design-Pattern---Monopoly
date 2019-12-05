@@ -8,7 +8,7 @@ namespace Monopoly
     {
         private Position[] board;
         private GameBoard boardGame;
-        private List<Neighborhood> listNeighborhood;
+        private List<Neighbourhood> listNeighbourhood;
         private List<Player> players;
         private bool end = false;
         private static Game instance;
@@ -24,7 +24,7 @@ namespace Monopoly
             this.observers = new List<IObserver>();
             this.cards = new List<Icard>();
             this.players = new List<Player>();
-            this.listNeighborhood = new List<Neighborhood>();
+            this.listNeighbourhood = new List<Neighbourhood>();
             this.d1 = new Dice();
             this.d2 = new Dice();
         }
@@ -65,10 +65,10 @@ namespace Monopoly
             set { this.players = value; }
         }
 
-        public List<Neighborhood> ListNeighborhood
+        public List<Neighbourhood> ListNeighbourhood
         {
-            get { return this.listNeighborhood;}
-            set { this.listNeighborhood = value; }
+            get { return this.listNeighbourhood;}
+            set { this.listNeighbourhood = value; }
         }
 
         public List<IObserver> Observers

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Monopoly
 {
-    class Neighborhood
+    class Neighbourhood
     {
         private string name;
         private int id;
@@ -12,7 +12,7 @@ namespace Monopoly
         private int housePrice;
         private int currentIndex;
 
-        public Neighborhood(string name, int id, int housePrice)
+        public Neighbourhood(string name, int id, int housePrice)
         {
             this.name = name;
             this.id = id;
