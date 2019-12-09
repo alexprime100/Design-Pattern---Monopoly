@@ -86,8 +86,8 @@ namespace Monopoly
 
         public List<Neighbourhood> Neighbourhoods
         {
-            get { return this.Neighbourhoods; }
-            set { this.Neighbourhoods = value; }
+            get { return this.neighbourhoods; }
+            set { this.neighbourhoods = value; }
         }
     }
 }

@@ -302,7 +302,7 @@ namespace Monopoly
             this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Bank is versing you ", 50));
             this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "your building is paying back, you earn ", 150));
             this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Congratulations, you won the crosswords competition, you earn ", 100));
-            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Bank is reimbursing you ", 20));
+            this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Bank is reimbursing you ", 200));
             this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "You inherit ", 100));
             this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "Your sale is paying back, you earn ",50 ));
             this.model.Cards.Add((MoneyCard)cf.CreateCard(CardType.MoneyCard, "you earn your annual income : ", 100));
@@ -411,11 +411,19 @@ namespace Monopoly
             }
             else
             {
-                if (this.model.Players[index].Position.Rent != 0)   //if the player has to pay a tax or to earn money
+                if (this.model.Players[index].Position.Rent != 0 || this.model.Players[index].Position.Index == 0)   //if the player has to pay a tax or to earn money
                 {
-                    this.model.Players[index].Balance -= this.model.Players[index].Position.Rent;    //the player's money is updated
-                    Console.WriteLine("You lost " + this.model.Players[index].Position.Rent + " Euros");
-                    this.model.Board[20].Rent -= this.model.Players[index].Position.Rent;
+                    if (this.model.Players[index].Position.Index == 0)
+                    {
+                        this.model.Players[index].Balance += 200;
+                        Console.WriteLine("you earned 200Euros at the starting point!");
+                    }
+                    else
+                    {
+                        this.model.Players[index].Balance -= this.model.Players[index].Position.Rent;    //the player's money is updated
+                        Console.WriteLine("You lost " + this.model.Players[index].Position.Rent + " Euros");
+                        this.model.Board[20].Rent -= this.model.Players[index].Position.Rent;
+                    }
                     
                     this.model.Observers[index].update(null, this.model.Players[index]);
                 }
@@ -504,7 +512,7 @@ namespace Monopoly
                 if (PositionIndex > 40)          //the player earns 200euros if he goes through the starting point
                 {
                     this.model.Players[index].Balance += 200;
-                    Console.WriteLine("you earned 200Euros!");
+                    Console.WriteLine("you earned 200Euros at the starting point!");
                 }
                 this.model.Observers[index].update(null, this.model.Players[index]);         //the player's observer updates his money
 
